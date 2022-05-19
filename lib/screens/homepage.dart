@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homily/screens/expense_tracker/expense_tracker_homepage.dart';
-import 'package:homily/screens/login.dart';
+import 'package:homily/screens/login/login.dart';
 import 'package:homily/screens/photo_album/photo_album_home.dart';
 import 'package:homily/screens/profile.dart';
 import 'package:homily/service/auth.dart';

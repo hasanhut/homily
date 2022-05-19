@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homily/screens/homepage.dart';
-import 'package:homily/screens/register.dart';
+import 'package:homily/screens/login/register.dart';
 import 'package:homily/service/auth.dart';
 
 class LoginPage extends StatefulWidget {
