@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homily/screens/expense_tracker_homepage.dart';
-import 'package:homily/screens/photo_album_home.dart';
+import 'package:homily/screens/expense_tracker/expense_tracker_homepage.dart';
+import 'package:homily/screens/login.dart';
+import 'package:homily/screens/photo_album/photo_album_home.dart';
+import 'package:homily/screens/profile.dart';
+import 'package:homily/service/auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,7 +13,15 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+final FirebaseAuth auth = FirebaseAuth.instance;
+
+void inputData() {
+  final user = auth.currentUser;
+  final uid = user?.uid;
+}
+
 class _HomePageState extends State<HomePage> {
+  AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,9 +34,11 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: const Icon(Icons.person),
               tooltip: 'Show Snackbar',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('This is a snackbar')));
+              onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                ),
               },
             ),
           ]),
@@ -113,6 +127,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                 },
                 child: const Text("Photo Album"),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.black54),
+                    overlayColor: MaterialStateProperty.all(Colors.grey),
+                    minimumSize: MaterialStateProperty.all(
+                        const Size(300, 50)) //Button Background Color
+                    ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+              ),
+              ElevatedButton(
+                onPressed: () => {
+                  inputData(),
+                  _authService.signOut(),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  ),
+                },
+                child: const Text("Sign Out"),
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.black54),
                     overlayColor: MaterialStateProperty.all(Colors.grey),
