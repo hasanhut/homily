@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homily/screens/expense_tracker/expense_tracker_homepage.dart';
+import 'package:homily/screens/expense_tracker/expenseTrackerHomepage.dart';
 import 'package:homily/screens/login/login.dart';
-import 'package:homily/screens/photo_album/photo_album_home.dart';
+import 'package:homily/screens/photo_album/photoAlbumHome.dart';
 import 'package:homily/screens/profile.dart';
-import 'package:homily/service/auth.dart';
+import 'package:homily/screens/root/root.dart';
+import 'package:homily/service/currentUser.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,7 +23,6 @@ void inputData() {
 }
 
 class _HomePageState extends State<HomePage> {
-  AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,13 +139,16 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(5.0),
               ),
               ElevatedButton(
-                onPressed: () => {
-                  inputData(),
-                  _authService.signOut(),
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  ),
+                onPressed: () async {
+                  CurrentUser _currentUser =
+                      Provider.of<CurrentUser>(context, listen: false);
+                  String _returnString = await _currentUser.signOut();
+                  if (_returnString == "success") {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => OurRoot()),
+                        (route) => false);
+                  }
                 },
                 child: const Text("Sign Out"),
                 style: ButtonStyle(

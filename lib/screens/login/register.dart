@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homily/screens/login/login.dart';
-import 'package:homily/service/auth.dart';
+import 'package:homily/service/currentUser.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -14,7 +15,24 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordAgainController =
       TextEditingController();
 
-  AuthService _authService = AuthService();
+  void _signUpUser(
+      String email, String password, BuildContext context, String name) async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+    try {
+      String _returnString =
+          await _currentUser.signUpUser(email, password, name);
+      if (_returnString == "success") {
+        Navigator.pop(context);
+      } else {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(_returnString),
+          duration: Duration(seconds: 2),
+        ));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,17 +175,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       InkWell(
                         onTap: () {
-                          _authService
-                              .createPerson(
-                                  _nameController.text,
-                                  _emailController.text,
-                                  _passwordController.text)
-                              .then((value) {
-                            return Navigator.push(
+                          if (_passwordController.text ==
+                              _passwordAgainController.text) {
+                            _signUpUser(
+                                _emailController.text,
+                                _passwordController.text,
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
-                          });
+                                _nameController.text);
+                          } else {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text("Passwords do not match"),
+                              duration: Duration(seconds: 2),
+                            ));
+                          }
                         },
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 5),
