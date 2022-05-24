@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:homily/screens/login/login.dart';
 import 'package:homily/screens/root/root.dart';
 import 'package:homily/service/currentUser.dart';
 import 'package:provider/provider.dart';
