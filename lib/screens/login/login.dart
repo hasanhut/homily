@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:homily/screens/homepage.dart';
 import 'package:homily/screens/login/register.dart';
-import 'package:homily/service/auth.dart';
+import 'package:homily/screens/root/root.dart';
+import 'package:homily/service/currentUser.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,7 +14,25 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  AuthService _authService = AuthService();
+  void _loginUser(String email, String password, BuildContext context) async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+
+    try {
+      String _returnString =
+          await _currentUser.loginUserWithEmail(email, password);
+      if (_returnString == "success") {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => OurRoot()));
+      } else {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(_returnString),
+          duration: Duration(seconds: 2),
+        ));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,15 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      _authService
-                          .signIn(
-                              _emailController.text, _passwordController.text)
-                          .then((value) {
-                        return Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomePage()));
-                      });
+                      _loginUser(_emailController.text,
+                          _passwordController.text, context);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 5),

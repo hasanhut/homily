@@ -1,8 +1,13 @@
-import 'package:flutter/material.dart';
+class OurUser {
+  String? uid;
+  String? name;
+  String? email;
+  String? groupId;
 
-class User {
-  final String name;
-  final String email;
-
-  User({required this.name, required this.email});
+  OurUser({
+    required this.uid,
+    required this.name,
+    required this.email,
+    required this.groupId,
+  });
 }

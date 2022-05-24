@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:homily/screens/expense_tracker/top_card_expense_tracker.dart';
+import 'package:homily/screens/expense_tracker/topCardExpenseTracker.dart';
 import '../../model/transaction.dart';
-import 'new_transaction.dart';
+import 'newTransaction.dart';
 
 class ExpenseTrackerHomePage extends StatefulWidget {
   const ExpenseTrackerHomePage({Key? key}) : super(key: key);
