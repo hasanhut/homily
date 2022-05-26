@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homily/screens/calendarPage/calendarHomePage.dart';
 import 'package:homily/screens/expense_tracker/expenseTrackerHomepage.dart';
 import 'package:homily/screens/login/login.dart';
 import 'package:homily/screens/photo_album/photoAlbumHome.dart';
@@ -49,7 +50,13 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: () => {},
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CalendarHomePage()),
+                  ),
+                },
                 child: const Text("Calendar"),
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.black54),

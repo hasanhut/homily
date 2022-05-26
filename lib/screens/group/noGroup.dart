@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:homily/screens/group/createGroup.dart';
 import 'package:homily/screens/group/joinGroup.dart';
+import 'package:homily/screens/root/root.dart';
+import 'package:provider/provider.dart';
+
+import '../../service/currentUser.dart';
 
 class OurNoGroup extends StatelessWidget {
   const OurNoGroup({Key? key}) : super(key: key);
@@ -62,7 +66,7 @@ class OurNoGroup extends StatelessWidget {
               minimumSize: MaterialStateProperty.all(
                   const Size(300, 50)) //Button Background Color
               ),
-        )
+        ),
       ]),
     );
   }

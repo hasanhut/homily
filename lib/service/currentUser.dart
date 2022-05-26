@@ -14,7 +14,7 @@ class CurrentUser extends ChangeNotifier {
     String retVal = "error";
     try {
       User? _firebaseUser = await _auth.currentUser;
-      if (_firebaseUser != null) {
+      if (_firebaseUser != null && _firebaseUser != "") {
         _currentUser = (await OurDatabase().getUserInfo(_firebaseUser.uid))!;
         if (_currentUser != null) {
           retVal = "success";

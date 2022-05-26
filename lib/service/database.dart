@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:homily/model/calendarEvent.dart';
 import 'package:homily/model/group.dart';
 import 'package:homily/model/user.dart';
 
@@ -40,6 +43,7 @@ class OurDatabase {
   Future<String> createGroup(String groupName, String? useruid) async {
     String retVal = "error";
     List<String> members = [];
+    List<CalendarEvent> _calendarEvents = [];
 
     try {
       members.add(useruid!);
@@ -47,6 +51,7 @@ class OurDatabase {
         'name': groupName,
         'leader': useruid,
         'members': members,
+        'calendarEvents': _calendarEvents,
       });
 
       await _firestore
@@ -60,6 +65,43 @@ class OurDatabase {
     }
     return retVal;
   }
+
+  Future<String> addCalendarEvents(String groupId, String title,
+      String description, DateTime? eventDate) async {
+    String retVal = "error";
+    var _calendarEvent = CalendarEvent(
+        title: title, description: description, eventDate: eventDate);
+    var map = new Map<String, dynamic>();
+    map['title'] = _calendarEvent.title;
+    map['description'] = _calendarEvent.description;
+    map['eventDate'] = _calendarEvent.eventDate;
+    try {
+      await _firestore.collection("groups").doc(groupId).update({
+        'calendarEvents': FieldValue.arrayUnion([map]),
+      });
+
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
+  /*Future<String> createCalendarEvents(CalendarEvent calendarEvent) async {
+    String retVal = "error";
+
+    try {
+      await _firestore.collection("calendarEvents").doc(calendarEvent.id).set({
+        "title": calendarEvent.title,
+        "description": calendarEvent.description,
+        "eventdate": calendarEvent
+      });
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }*/
 
   Future<String> joinGroup(String? groupId, String? useruid) async {
     String retVal = "error";
