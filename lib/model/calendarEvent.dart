@@ -1,7 +1,6 @@
 class CalendarEvent {
-  String? id;
-  final String title;
-  final String description;
+  String? title;
+  String? description;
   DateTime? eventDate;
 
   CalendarEvent(

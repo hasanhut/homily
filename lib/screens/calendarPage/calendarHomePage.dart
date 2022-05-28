@@ -1,7 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:homily/model/calendarEvent.dart';
 import 'package:homily/screens/calendarPage/addEventPage.dart';
+import 'package:homily/service/currentUser.dart';
+import 'package:homily/service/database.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -18,6 +22,20 @@ class _CalendarHomePageState extends State<CalendarHomePage> {
   List<dynamic>? _selectedEvents;
   TextEditingController? _eventController;
   SharedPreferences? prefs;
+
+  Future<List?> _getCalendarEvents() async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+    List? _calendarEvent = await OurDatabase()
+        .getCalendarEvents(_currentUser.getCurrentUser.groupId!);
+    print(_calendarEvent);
+  }
+
+  Future<List?> _getEvent() async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+    CalendarEvent _calendarEvent =
+        await OurDatabase().getEvent(_currentUser.getCurrentUser.groupId!);
+    print(_calendarEvent);
+  }
 
   Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
     Map<String, dynamic> newMap = {};
@@ -106,6 +124,7 @@ class _CalendarHomePageState extends State<CalendarHomePage> {
                 title: Text(event),
               ),
             ),
+            ElevatedButton(onPressed: () => _getEvent(), child: Text("PRINT"))
           ],
         ),
       ),
@@ -115,38 +134,6 @@ class _CalendarHomePageState extends State<CalendarHomePage> {
           context,
           MaterialPageRoute(builder: (context) => AddEventPage()),
         ),
-      ),
-    );
-  }
-
-  _showAddDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: TextField(
-          controller: _eventController,
-        ),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              if (_eventController!.text.isEmpty) return;
-              setState(() {
-                if (_events![_calendarController!.selectedDay] != null) {
-                  _events![_calendarController!.selectedDay]
-                      ?.add(_eventController!.text);
-                } else {
-                  _events![_calendarController!.selectedDay] = [
-                    _eventController!.text
-                  ];
-                }
-                prefs?.setString("events", json.encode(encodeMap(_events!)));
-                _eventController!.clear();
-                Navigator.pop(context);
-              });
-            },
-            child: Text("Save"),
-          ),
-        ],
       ),
     );
   }

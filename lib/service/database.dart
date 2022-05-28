@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_helpers/firebase_helpers.dart';
 import 'package:homily/model/calendarEvent.dart';
 import 'package:homily/model/group.dart';
 import 'package:homily/model/user.dart';
+import 'package:intl/intl.dart';
 
 class OurDatabase {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -119,6 +121,44 @@ class OurDatabase {
     } catch (e) {
       print(e);
     }
+    return retVal;
+  }
+
+  Future<List?> getCalendarEvents(String? groupId) async {
+    List<dynamic>? eventList;
+
+    try {
+      final _calendarEvent = await FirebaseFirestore.instance
+          .collection("groups")
+          .doc(groupId)
+          .get();
+      eventList = _calendarEvent.data()!["calendarEvents"];
+    } catch (e) {
+      print(e);
+    }
+
+    return eventList;
+  }
+
+  Future<CalendarEvent> getEvent(String? groupId) async {
+    CalendarEvent retVal =
+        CalendarEvent(description: "", eventDate: null, title: "");
+
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _docSnapshot =
+          await _firestore.collection("groups").doc(groupId).get();
+      retVal.title = _docSnapshot.data()!["calendarEvents"][0]["title"];
+      retVal.description =
+          _docSnapshot.data()!["calendarEvents"][0]["description"];
+      retVal.eventDate = _docSnapshot.data()!["calendarEvents"][0]["eventDate"];
+    } catch (e) {
+      print(e);
+    }
+    String formatTimestamp(Timestamp timestamp) {
+      var format = new DateFormat('y-MM-d'); // <- use skeleton here
+      return format.format(timestamp.toDate());
+    }
+
     return retVal;
   }
 
