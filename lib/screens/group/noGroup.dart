@@ -5,6 +5,7 @@ import 'package:homily/screens/root/root.dart';
 import 'package:provider/provider.dart';
 
 import '../../service/currentUser.dart';
+import '../login/login.dart';
 
 class OurNoGroup extends StatelessWidget {
   const OurNoGroup({Key? key}) : super(key: key);
@@ -60,6 +61,26 @@ class OurNoGroup extends StatelessWidget {
         ElevatedButton(
           onPressed: () => _goToJoin(context),
           child: Text("Join Group"),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.black54),
+              overlayColor: MaterialStateProperty.all(Colors.grey),
+              minimumSize: MaterialStateProperty.all(
+                  const Size(300, 50)) //Button Background Color
+              ),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            CurrentUser _currentUser =
+                Provider.of<CurrentUser>(context, listen: false);
+            String _returnString = await _currentUser.signOut();
+            if (_returnString == "success") {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => OurRoot()),
+                  (route) => false);
+            }
+          },
+          child: Text("Login"),
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.black54),
               overlayColor: MaterialStateProperty.all(Colors.grey),

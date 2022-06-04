@@ -6,6 +6,7 @@ import 'package:homily/screens/login/login.dart';
 import 'package:homily/screens/photo_album/photoAlbumHome.dart';
 import 'package:homily/screens/profile.dart';
 import 'package:homily/screens/root/root.dart';
+import 'package:homily/screens/shopping_list/shopping_list_page.dart';
 import 'package:homily/service/currentUser.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +70,12 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(5.0),
               ),
               ElevatedButton(
-                onPressed: () => {},
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ShoppingListPage()),
+                  ),
+                },
                 child: const Text("Shopping List"),
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.black54),
