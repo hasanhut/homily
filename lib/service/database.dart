@@ -46,6 +46,7 @@ class OurDatabase {
     String retVal = "error";
     List<String> members = [];
     List<CalendarEvent> _calendarEvents = [];
+    List<String> _shoppingItem = [];
 
     try {
       members.add(useruid!);
@@ -54,6 +55,7 @@ class OurDatabase {
         'leader': useruid,
         'members': members,
         'calendarEvents': _calendarEvents,
+        'shoppingLists': _shoppingItem
       });
 
       await _firestore
@@ -89,6 +91,20 @@ class OurDatabase {
     return retVal;
   }
 
+  Future<String> addShoppingList(String groupId, String item) async {
+    String retVal = "error";
+    var map = new Map<String, dynamic>();
+    try {
+      await _firestore.collection("groups").doc(groupId).update({
+        'shoppingLists': FieldValue.arrayUnion([item]),
+      });
+
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
   /*Future<String> createCalendarEvents(CalendarEvent calendarEvent) async {
     String retVal = "error";
 
@@ -138,6 +154,22 @@ class OurDatabase {
     }
 
     return eventList;
+  }
+
+  Future<List?> getShoppingListItem(String? groupId) async {
+    List<String>? shoppingList;
+
+    try {
+      final _calendarEvent = await FirebaseFirestore.instance
+          .collection("groups")
+          .doc(groupId)
+          .get();
+      shoppingList = _calendarEvent.data()!["shoppingLists"];
+    } catch (e) {
+      print(e);
+    }
+
+    return shoppingList;
   }
 
   Future<CalendarEvent> getEvent(String? groupId) async {

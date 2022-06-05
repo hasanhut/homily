@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:homily/service/currentUser.dart';
+import 'package:homily/service/database.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:homily/screens/shopping_list/suggestions.dart';
@@ -11,9 +14,7 @@ class ShoppingListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ToShop - Shopping List',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
+      theme: ThemeData(primarySwatch: Colors.grey),
       home: TodoList(title: 'Shopping List'),
     );
   }
@@ -73,6 +74,18 @@ class _TodoListState extends State<TodoList> {
       Fluttertoast.showToast(
         msg: "Add some text to add a new item.",
       );
+    }
+  }
+
+  void addItem(
+    BuildContext context,
+    String item,
+  ) async {
+    CurrentUser _currentUser = Provider.of<CurrentUser>(context, listen: false);
+    String _returnString = await OurDatabase()
+        .addShoppingList(_currentUser.getCurrentUser.groupId!, item);
+    if (_returnString == "success") {
+      print("BASARIYLA TAMAMLANDI");
     }
   }
 
@@ -199,7 +212,8 @@ class _TodoListState extends State<TodoList> {
                     textFieldConfiguration: TextFieldConfiguration(
                       controller: inputController,
                       textCapitalization: TextCapitalization.sentences,
-                      onSubmitted: (dynamic x) => _addItem(),
+                      onSubmitted: (dynamic x) =>
+                          addItem(context, inputController.text),
                       autofocus: true,
                       focusNode: _keyboardFocusNode,
                       decoration: InputDecoration(
@@ -236,7 +250,7 @@ class _TodoListState extends State<TodoList> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addItem,
+        onPressed: () => {addItem(context, inputController.text), _addItem()},
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
